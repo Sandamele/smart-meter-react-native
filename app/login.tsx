@@ -5,6 +5,7 @@ import { Link, useRouter } from "expo-router";
 import Button from "./components/ui/Button";
 import axios from "axios";
 import useAuthStore from "../store/store";
+import Loader from "./components/ui/Loader";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +15,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const {setAuthToken, setUsername} = useAuthStore();
   const handleLogin = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,16 +31,19 @@ const Login = () => {
     setValidation(errors);
 
     if (Object.values(errors).some((error) => error !== "")) return;
+    setLoading(true);
       const body = {
         email: email.toLocaleLowerCase(),
         password,
       }
-        await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/auth/login`, body, {headers: {"Content-Type": "application/json"}}).then((data) => {
+        await axios.post(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/login`, body, {headers: {"Content-Type": "application/json"}}).then((data) => {
           setAuthToken(data.data.data.token);
           setUsername(data.data.data.username);
+          setLoading(false);
           router.push("/dashboard");
         })
         .catch(async (error) => {
+          setLoading(false);
           if (error.response.data.error && error.response.data.error.length > 0) {
             setValidation((prev) => ({...prev,  [error.response.data.error[0].field] : error.response.data.error[0].message}))
           } else {
@@ -92,6 +97,7 @@ const Login = () => {
           Register Now
         </Link>
       </Text>
+      <Loader visible={loading}/>
     </View>
   );
 };

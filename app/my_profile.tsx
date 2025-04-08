@@ -6,11 +6,13 @@ import useAuthStore from "@/store/store";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { Alert } from 'react-native';
+import Loader from "./components/ui/Loader";
 
 type Props = {};
 
 const MyProfile = (props: Props) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -33,11 +35,13 @@ const MyProfile = (props: Props) => {
   if (authToken === null) router.push("/login");
   useEffect(() => {
     const getProfile = async () => {
-      const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/auth/me`, {
+      setLoading(true);
+      const response = await axios.get(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/me`, {
         headers: {
           "Authorization": `Bearer ${authToken}`
         }
       });
+      setLoading(false)
       setFirstname(response.data.data.firstname === null ? "": response.data.data.firstname );
       setLastname(response.data.data.lastname === null ? "": response.data.data.lastname );
       setPhoneNumber(response.data.data.phoneNumber === null ? "": response.data.data.phoneNumber);
@@ -58,15 +62,17 @@ const MyProfile = (props: Props) => {
     };
     setValidationProfile(errors);
     if (Object.values(errors).some((error) => error !== "")) return;
-
+    setLoading(true);
     const body = {firstname, lastname, phoneNumber}
-      await axios.put(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/auth/update`,body, {
+      await axios.put(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/update`,body, {
         headers: {"Content-Type": "application/json", "Authorization": `Bearer ${authToken}`}
       })
       .then((data) => {
+        setLoading(false)
           Alert.alert('Profile', 'Profile updated');
       })
       .catch((error) => {
+        setLoading(false)
         console.log(error.response.data)
       })
   }
@@ -82,10 +88,12 @@ const MyProfile = (props: Props) => {
     }
     setValidationResetPassword(errors);
     if (Object.values(errors).some((error) => error !== "")) return;
-    await axios.post(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/auth/reset-password`,{
+    setLoading(true);
+    await axios.post(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/reset-password`,{
       currentPassword, newPassword
     }, {headers: {"Authorization" :`Bearer ${authToken}`}})
     .then(() => {
+      setLoading(false)
       Alert.alert('Reset Password', 'Password Changed');
       setConfirmPassword("");
       setCurrentPassword("");
@@ -93,6 +101,7 @@ const MyProfile = (props: Props) => {
       setErrorMessage("");
     })
     .catch((error) => {
+      setLoading(false)
       setErrorMessage(error.response.data.error.message)
     })
   }
@@ -174,6 +183,7 @@ const MyProfile = (props: Props) => {
           <Button title="Reset" onPress={handleResetPassword}/>
         </View>
       </View>
+      <Loader visible={loading} />
     </ScrollView>
   );
 };

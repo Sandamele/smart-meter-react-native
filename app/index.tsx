@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -11,7 +11,7 @@ const Index = () => {
   useFocusEffect(
     React.useCallback(() => {
       const appIsReady = async () => {
-        await axios.get(`${process.env.EXPO_PUBLIC_API_URL}`)
+        await axios.get(`https://smart-meter-backend-y19r.onrender.com`)
           .then((data) => {
             if (data.data.serverRunning) {
               setTimeout(() => {
@@ -28,6 +28,7 @@ const Index = () => {
     <View style={styles.container}>
       <MaterialIcons name="electric-bolt" size={150} color="gold" />
       <Text style={styles.logo}>Smart Power Pay</Text>
+      <ActivityIndicator size={60} color="white" />
     </View>
   );
 };
@@ -45,5 +46,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 35,
     marginTop: 20,
+    marginBottom: 20,
   },
 });

@@ -9,6 +9,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
 import useAuthStore from "@/store/store";
+import Loader from "./components/ui/Loader";
 type TransactionHistory = {
   units: number;
   id: string;
@@ -22,16 +23,18 @@ export default function transaction_history() {
   const { id } = localParams;
   const {authToken} = useAuthStore()
   const [transactionHistories, setTransactionHistories] = useState<TransactionHistory []>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getTransactionHistories = async () => {
-      await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/transaction-histories?beneficiaryId=${id}`,
+      setLoading(true);
+      await axios.get(`https://smart-meter-backend-y19r.onrender.com/api/v1/transaction-histories?beneficiaryId=${id}`,
         {headers: {"Authorization":`Bearer ${authToken}`}})
         .then((data) => {
           setTransactionHistories(data.data.data);
           setLoading(false);
         })
         .catch(error => {
+          setLoading(false)
           console.log(error);
         })
     }
@@ -44,8 +47,7 @@ export default function transaction_history() {
   }
   return (
     <View style={styles.container}>
-      {loading ? <Text>Loading...</Text> :
-      <ScrollView>
+      {transactionHistories.length > 0 ? <ScrollView>
         {transactionHistories.length > 0 && transactionHistories.map((transactionHistory) => (
           <View style={styles.card} key={transactionHistory.id}>
           <View style={styles.tokenContainer}>
@@ -57,7 +59,17 @@ export default function transaction_history() {
           </View>
         </View>
         ))}
-      </ScrollView>}
+      </ScrollView> : 
+      <View style={styles.noResults}>
+      <MaterialIcons
+        name="account-balance"
+        size={125}
+        color="#F87315"
+      />
+      <Text style={{ fontSize: 25 }}>No Transaction History</Text>
+    </View>
+      }
+      <Loader visible={loading} />
     </View>
   );
 }
@@ -65,7 +77,7 @@ export default function transaction_history() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    margin: 20,
+    padding: 20,
   },
   card:{
     backgroundColor: "#fff",
@@ -100,5 +112,10 @@ const styles = StyleSheet.create({
     color: "#F87315",
     fontSize: 16,
     textAlign: "center"
-  }
+  },
+  noResults: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

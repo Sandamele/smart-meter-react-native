@@ -34,8 +34,10 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: 20,
     borderRadius: 8,
+    paddingTop: 10,
+    paddingBottom: 10,
     color: "black",
     backgroundColor: "#fff",
-    cursor: "pointer"
+    cursor: "pointer",
   },
 });

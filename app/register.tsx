@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 import Button from "./components/ui/Button";
 import axios from "axios";
+import Loader from "./components/ui/Loader";
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -15,6 +16,7 @@ export default function RegisterScreen() {
     email: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
   const handleCreateAccount = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
@@ -36,6 +38,7 @@ export default function RegisterScreen() {
     setValidation(errors);
 
     if (Object.values(errors).some((error) => error !== "")) return;
+    setLoading(true)
     const body = {
       email: email.toLowerCase(),
       username,
@@ -44,12 +47,14 @@ export default function RegisterScreen() {
 
     try {
       await axios.post(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/v1/auth/register`,
+        `https://smart-meter-backend-y19r.onrender.com/api/v1/auth/register`,
         body,
         { headers: { "Content-Type": "application/json" } }
       );
+      setLoading(false);
       router.push("/login");
     } catch (error) {
+      setLoading(false);
       setError("Either username or email is already taken");
       setTimeout(() => {
         setError("");
@@ -108,6 +113,7 @@ export default function RegisterScreen() {
           Login
         </Link>
       </Text>
+      <Loader visible={loading} />
     </View>
   );
 }

@@ -18,6 +18,7 @@ import useAuthStore from "@/store/store";
 import axios from "axios";
 import { jwtDecode } from 'jwt-decode';
 import { useRouter } from "expo-router";
+import Loader from "./components/ui/Loader";
 type Props = {};
 type Beneficiary = {
   [x: string]: string;
@@ -31,6 +32,7 @@ type DecodedToken = {
 };
 const Benifiary = (props: Props) => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -68,17 +70,20 @@ const Benifiary = (props: Props) => {
   const [validationCost, setValidationCost] = useState("");
   useEffect(() => {
     const getBeneficiaries = async () => {
+      setLoading(true);
       await axios
-        .get(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/beneficiaries`, {
+        .get(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
         })
         .then((data) => {
+          setLoading(false)
           setBeneficiaries(data.data.data);
           setModalVisible(false);
         })
         .catch((error) => {
+          setLoading(false)
           console.log(error.response);
         });
     };
@@ -105,6 +110,7 @@ const Benifiary = (props: Props) => {
 
     setValidation(errors);
     if (Object.values(errors).some((error) => error !== "")) return;
+    setLoading(true);
     const body = {
       municipality: value,
       firstname,
@@ -114,10 +120,11 @@ const Benifiary = (props: Props) => {
     };
     if (newRecord) {
       await axios
-        .post(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/beneficiaries`, body, {
+        .post(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries`, body, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((data) => {
+          setLoading(false)
           setReload(!reload);
           setModalVisible(false);
           setFirstname("");
@@ -127,6 +134,7 @@ const Benifiary = (props: Props) => {
           setValue("");
         })
         .catch((error) => {
+          setLoading(false)
           if (
             error.response.data.error &&
             error.response.data.error.length > 0
@@ -139,13 +147,14 @@ const Benifiary = (props: Props) => {
     } else {
       await axios
         .put(
-          `${process.env.EXPO_PUBLIC_API_URL}/api/v1/beneficiaries/${beneficiaryId}`,
+          `https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries/${beneficiaryId}`,
           body,
           {
             headers: { Authorization: `Bearer ${authToken}` },
           }
         )
         .then((data) => {
+          setLoading(false)
           setReload(!reload);
           setModalVisible(false);
           setFirstname("");
@@ -156,6 +165,7 @@ const Benifiary = (props: Props) => {
           setValue("");
         })
         .catch((error) => {
+          setLoading(false)
           if (
             error.response.data.error &&
             error.response.data.error.length > 0
@@ -168,16 +178,19 @@ const Benifiary = (props: Props) => {
     }
   };
   const handleDeleteBeneficiary = async (id: String) => {
+    setLoading(true);
     await axios
-      .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/v1/beneficiaries/${id}`, {
+      .delete(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries/${id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       })
       .then((data) => {
+        setLoading(false)
         setReload(!reload);
       })
       .catch((error) => {
+        setLoading(false)
         if (error.response.data.error && error.response.data.error.length > 0) {
           Alert.alert("Error", error.response.data.error);
         } else {
@@ -434,6 +447,7 @@ const Benifiary = (props: Props) => {
       >
         <AntDesign name="pluscircle" size={50} color="#FF7043" />
       </TouchableHighlight>
+      <Loader visible={loading} />
     </View>
   );
 };
