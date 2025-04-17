@@ -1,50 +1,93 @@
-# Welcome to your Expo app 👋
+# ⚡️ Smart Meter App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This is a full-stack Smart Meter monitoring system, consisting of:
 
-## Get started
+- 📱 **Frontend**: React Native app built with [Expo](https://expo.dev/)
+- 🛠️ **Backend**: Node.js REST API, included as a Git **submodule**
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## 📦 Tech Stack
 
-   ```bash
-    npx expo start
-   ```
+### Frontend
+- React Native
+- Expo
+- React Navigation
+- Axios
 
-In the output, you'll find options to open the app in a
+### Backend
+- Node.js
+- Express.js
+- SQLite
+- Prisma
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🔧 Prerequisites
 
-## Get a fresh project
+Before getting started, make sure you have:
 
-When you're ready, run:
+- [Node.js](https://nodejs.org/) (v18 or later)
+- [Expo CLI](https://docs.expo.dev/get-started/installation/)
+- [Git](https://git-scm.com/)
+
+---
+
+## 🔽 Clone the Project (with Submodules)
 
 ```bash
-npm run reset-project
+git clone --recurse-submodules https://github.com/Sandamele/smart-meter-react-native.git
+cd smart-meter-react-native
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Start the backend
+```bash
+cd backend
+npm install
+cp .env.example .env   # Configure your environment variables
+npm run develop
+```
 
-## Learn more
+## Start the frontend
+```bash
+cd ..
+npm install
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Updating the Backend Submodule
+```bash
+cd backend
+git pull origin main
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+cd ..
+git add backend
+git commit -m "Update backend submodule"
+git push
+```
 
-## Join the community
+## Pushing Changes
 
-Join our community of developers creating universal apps.
+### Push frontend changes (main repo):
+```bash
+git add .
+git commit -m "Update frontend UI"
+git push origin main
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Push backend changes (inside the submodule):
+```bash
+cd backend
+git add .
+git commit -m "Fix backend API endpoint"
+git push origin main
+```
+### Then update the submodule reference in the main repo:
+```bash
+cd ..
+git add backend
+git commit -m "Update submodule pointer"
+git push origin main
+```
