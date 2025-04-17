@@ -11,7 +11,7 @@ const Index = () => {
   useFocusEffect(
     React.useCallback(() => {
       const appIsReady = async () => {
-        await axios.get(`https://smart-meter-backend-y19r.onrender.com`)
+        await axios.get(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}`)
           .then((data) => {
             if (data.data.serverRunning) {
               setTimeout(() => {

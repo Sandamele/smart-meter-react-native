@@ -36,7 +36,7 @@ const MyProfile = (props: Props) => {
   useEffect(() => {
     const getProfile = async () => {
       setLoading(true);
-      const response = await axios.get(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/me`, {
+      const response = await axios.get(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/auth/me`, {
         headers: {
           "Authorization": `Bearer ${authToken}`
         }
@@ -64,7 +64,7 @@ const MyProfile = (props: Props) => {
     if (Object.values(errors).some((error) => error !== "")) return;
     setLoading(true);
     const body = {firstname, lastname, phoneNumber}
-      await axios.put(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/update`,body, {
+      await axios.put(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/auth/update`,body, {
         headers: {"Content-Type": "application/json", "Authorization": `Bearer ${authToken}`}
       })
       .then((data) => {
@@ -89,7 +89,7 @@ const MyProfile = (props: Props) => {
     setValidationResetPassword(errors);
     if (Object.values(errors).some((error) => error !== "")) return;
     setLoading(true);
-    await axios.post(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/reset-password`,{
+    await axios.post(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/auth/reset-password`,{
       currentPassword, newPassword
     }, {headers: {"Authorization" :`Bearer ${authToken}`}})
     .then(() => {

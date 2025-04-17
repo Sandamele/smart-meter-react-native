@@ -27,7 +27,7 @@ export default function transaction_history() {
   useEffect(() => {
     const getTransactionHistories = async () => {
       setLoading(true);
-      await axios.get(`https://smart-meter-backend-y19r.onrender.com/api/v1/transaction-histories?beneficiaryId=${id}`,
+      await axios.get(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/transaction-histories?beneficiaryId=${id}`,
         {headers: {"Authorization":`Bearer ${authToken}`}})
         .then((data) => {
           setTransactionHistories(data.data.data);

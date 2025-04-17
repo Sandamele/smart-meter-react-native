@@ -36,7 +36,7 @@ const Login = () => {
         email: email.toLocaleLowerCase(),
         password,
       }
-        await axios.post(`https://smart-meter-backend-y19r.onrender.com/api/v1/auth/login`, body, {headers: {"Content-Type": "application/json"}}).then((data) => {
+        await axios.post(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/auth/login`, body, {headers: {"Content-Type": "application/json"}}).then((data) => {
           setAuthToken(data.data.data.token);
           setUsername(data.data.data.username);
           setLoading(false);

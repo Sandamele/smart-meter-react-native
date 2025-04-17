@@ -72,7 +72,7 @@ const Benifiary = (props: Props) => {
     const getBeneficiaries = async () => {
       setLoading(true);
       await axios
-        .get(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries`, {
+        .get(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/beneficiaries`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -120,7 +120,7 @@ const Benifiary = (props: Props) => {
     };
     if (newRecord) {
       await axios
-        .post(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries`, body, {
+        .post(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/beneficiaries`, body, {
           headers: { Authorization: `Bearer ${authToken}` },
         })
         .then((data) => {
@@ -147,7 +147,7 @@ const Benifiary = (props: Props) => {
     } else {
       await axios
         .put(
-          `https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries/${beneficiaryId}`,
+          `${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/beneficiaries/${beneficiaryId}`,
           body,
           {
             headers: { Authorization: `Bearer ${authToken}` },
@@ -180,7 +180,7 @@ const Benifiary = (props: Props) => {
   const handleDeleteBeneficiary = async (id: String) => {
     setLoading(true);
     await axios
-      .delete(`https://smart-meter-backend-y19r.onrender.com/api/v1/beneficiaries/${id}`, {
+      .delete(`${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/beneficiaries/${id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
