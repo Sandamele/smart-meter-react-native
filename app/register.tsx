@@ -47,7 +47,7 @@ export default function RegisterScreen() {
 
     try {
       await axios.post(
-        `https://smart-meter-backend-y19r.onrender.com/api/v1/auth/register`,
+        `${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/auth/register`,
         body,
         { headers: { "Content-Type": "application/json" } }
       );
