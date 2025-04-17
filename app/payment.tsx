@@ -21,7 +21,7 @@ const Payment = () => {
           <script>
             function payWithPaystack() {
               var handler = PaystackPop.setup({
-                key: 'pk_test_c0faa6d72d8a99767337aee8bf985eb79b448e1e', 
+                key: ${process.env.EXPO_PUBLIC_PAYSTACK_KEY}, 
                 email: '${email}',
                 amount: ${
                   parseFloat(Array.isArray(amount) ? amount[0] : amount) * 100
@@ -46,7 +46,7 @@ const Payment = () => {
     if (data.status === "success") {
       await axios
         .post(
-          `https://smart-meter-backend-y19r.onrender.com/api/v1/transaction-histories`,
+          `${process.env.EXPO_PUBLIC_SMART_METER_BACKEND}/api/v1/transaction-histories`,
           {
             cost: parseFloat(Array.isArray(amount) ? amount[0] : amount),
             paymentStatus: data.status.toString(),
